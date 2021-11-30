@@ -31,8 +31,16 @@ public class EmployeeController {
 
     //Update
     @PutMapping(path = "/employees/{id}")
-    public String updateEmployee(){
-        return "Employee updated Successfully";
+    public ResponseEntity < Employee > updateEmployee(@PathVariable(value = "id") Long employeeId,
+                                                      @Valid @RequestBody Employee employeeDetails) throws ResourceNotFoundException {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: "+employeeId));
+
+        employee.setEmailId(employeeDetails.getEmailId());
+        employee.setLastName(employeeDetails.getLastName());
+        employee.setFirstName(employeeDetails.getFirstName());
+        final Employee updatedEmployee = employeeRepository.save(employee);
+        return ResponseEntity.ok(updatedEmployee);
     }
 
     // Read
@@ -45,7 +53,8 @@ public class EmployeeController {
     public ResponseEntity < Employee > getEmployeeById(@PathVariable(value = "id") Long employeeId)
             throws ResourceNotFoundException {
 
-        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: "+employeeId));
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: "+employeeId));
 
         return ResponseEntity.ok().body(employee);
     }
