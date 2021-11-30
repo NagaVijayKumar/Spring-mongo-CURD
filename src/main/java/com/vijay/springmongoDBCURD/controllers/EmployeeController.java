@@ -1,5 +1,6 @@
 package com.vijay.springmongoDBCURD.controllers;
 
+import com.vijay.springmongoDBCURD.exception.ResourceNotFoundException;
 import com.vijay.springmongoDBCURD.models.Employee;
 import com.vijay.springmongoDBCURD.repository.EmployeeRepository;
 import com.vijay.springmongoDBCURD.service.SequenceGeneratorService;
@@ -40,13 +41,14 @@ public class EmployeeController {
         return employeeRepository.findAll();
     }
 
-//    @GetMapping(path = "/employees/{id}")
-//    public ResponseEntity< Employee > getEmployeeById(@PathVariable(value = "id") Long employeeId)
-//            throws ResourceNotFoundException {
-//        Employee employee = employeeRepository.findById(employeeId)
-//                .orElseThrow(() - > new ResourceNotFoundException("Employee not found for this id :: " + employeeId));
-//        return ResponseEntity.ok().body(employee);
-//    }
+    @GetMapping(path = "/employees/{id}")
+    public ResponseEntity < Employee > getEmployeeById(@PathVariable(value = "id") Long employeeId)
+            throws ResourceNotFoundException {
+
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: "+employeeId));
+
+        return ResponseEntity.ok().body(employee);
+    }
 
     //Delete
     @DeleteMapping(path = "/employees/{id}")
